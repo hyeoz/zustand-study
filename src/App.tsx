@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { DragEventHandler, useEffect, useState } from 'react';
 
 import './App.css';
 import Footer from './components/Footer';
@@ -8,7 +8,32 @@ import { todoStore } from './store/todos';
 
 function App() {
   const [value, setValue] = useState('');
+  const [floatId, setFloatId] = useState(0);
+  const [overId, setOverId] = useState(0);
+  const [order, setOrder] = useState<number[]>([]);
   const todos = todoStore();
+
+  useEffect(() => {
+    setOrder(todos.data.map((t) => t.id));
+  }, []);
+
+  const onDragStart = (id: number) => {
+    setFloatId(id);
+  };
+  const onDragEnd = () => {
+    const overIndex = order.findIndex((o) => o === overId);
+    const scoped = [...order].filter((f) => f !== floatId);
+    const slicedOrder = [
+      ...scoped.slice(0, overIndex),
+      floatId,
+      ...scoped.slice(overIndex),
+    ];
+    setOrder([...slicedOrder]);
+  };
+  const onDragOver: DragEventHandler<HTMLLIElement> = (e) => {
+    e.preventDefault();
+    setOverId(Number((e.target as Element).getAttribute('id')));
+  };
 
   return (
     <article>
@@ -55,32 +80,25 @@ function App() {
                 position: 'relative',
               }}
             >
-              <h1
-                style={{
-                  width: '100%',
-                  fontSize: '2.4rem',
-                  fontWeight: 400,
-                  padding: '32px 0',
-                  margin: 0,
-                  position: 'absolute',
-                  background: 'white',
-                }}
-              >
-                todo
-              </h1>
+              <h1 className="title">todo</h1>
 
-              <ul
-                style={{
-                  marginTop: '122px',
-                  maxHeight: '750px',
-                  overflowY: 'scroll',
-                }}
-              >
+              <ul className="todos-wrapper">
                 {todos.data.filter((t) => !t.done).length ? (
                   todos.data
+                    .sort(
+                      (a, b) =>
+                        order.findIndex((o) => o === a.id) -
+                        order.findIndex((o) => o === b.id)
+                    )
                     .filter((t) => !t.done)
                     .map((todo) => (
-                      <li key={todo.id}>
+                      <li
+                        key={todo.id}
+                        draggable
+                        onDragStart={() => onDragStart(todo.id)}
+                        onDragEnd={onDragEnd}
+                        onDragOver={onDragOver}
+                      >
                         <TodoCard {...todo} />
                       </li>
                     ))
@@ -94,31 +112,25 @@ function App() {
                 position: 'relative',
               }}
             >
-              <h1
-                style={{
-                  width: '100%',
-                  fontSize: '2.4rem',
-                  fontWeight: 400,
-                  padding: '32px 0',
-                  margin: 0,
-                  position: 'absolute',
-                }}
-              >
-                done
-              </h1>
+              <h1 className="title">done</h1>
 
-              <ul
-                style={{
-                  marginTop: '122px',
-                  maxHeight: '750px',
-                  overflowY: 'scroll',
-                }}
-              >
+              <ul className="todos-wrapper">
                 {todos.data.filter((t) => t.done).length ? (
                   todos.data
+                    .sort(
+                      (a, b) =>
+                        order.findIndex((o) => o === a.id) -
+                        order.findIndex((o) => o === b.id)
+                    )
                     .filter((t) => t.done)
                     .map((todo) => (
-                      <li key={todo.id}>
+                      <li
+                        key={todo.id}
+                        draggable
+                        onDragStart={() => onDragStart(todo.id)}
+                        onDragEnd={onDragEnd}
+                        onDragOver={onDragOver}
+                      >
                         <TodoCard {...todo} />
                       </li>
                     ))

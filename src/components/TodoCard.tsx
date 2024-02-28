@@ -4,7 +4,7 @@ export default function TodoCard(data: TodoType) {
   const todos = todoStore();
 
   return (
-    <div className="todo-card-wrapper">
+    <div className="todo-card-wrapper" id={data.id + ''}>
       <div
         style={{
           display: 'flex',

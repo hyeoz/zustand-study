@@ -2,9 +2,7 @@
   max-width: 1024px;
   height: 100vh;
   margin: 0 auto;
-  /* padding: 2rem; */
   text-align: center;
-  /* box-sizing: border-box; */
 }
 
 section {
@@ -24,15 +22,33 @@ ul li {
   list-style: none;
 }
 
+input {
+  &:focus-visible {
+    outline: none;
+  }
+}
+
 .body-wrapper {
   background-color: white;
   height: 100%;
-  /* max-height: 1009px; */
-  /* overflow: hidden; */
   display: flex;
   flex-direction: column;
   flex: 1;
   padding: 1rem;
+}
+.title {
+  width: 100%;
+  font-size: 2.4rem;
+  font-weight: 400;
+  padding: 32px 0;
+  margin: 0;
+  position: absolute;
+  background: white;
+}
+.todos-wrapper {
+  margin-top: 122px;
+  max-height: 750px;
+  overflow-y: scroll;
 }
 
 /* Todo Card */
@@ -42,5 +58,7 @@ ul li {
   padding: 16px;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+
+  transition: all 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 }

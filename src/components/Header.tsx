@@ -19,7 +19,7 @@ export default function Header() {
 
     const timer = setInterval(() => {
       setWeatherToggle(!weatherToggle);
-    });
+    }, 3000);
 
     return () => clearInterval(timer);
   }, []);
@@ -41,8 +41,6 @@ export default function Header() {
     };
     weather.update(_weather);
   }
-
-  //   console.log(weather.data);
 
   return (
     <section
